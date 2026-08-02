@@ -1,0 +1,24 @@
+ESP32	|	ST7789
+----------------------
+3V3	|	VDD,BL
+GND	|	GND
+D2	|	DC
+D4	|	RES
+D5	|	CS
+D18	|	SCL
+D23	|	SDA
+
+1 pin of every button to GND, another one to:
+ESP32	|	Buttons
+-----------------------
+D13	|	1
+D14	|	2
+D16(RX2)|	3
+D17(TX2)|	4
+D19	|	5
+D21	|	6
+D22	|	7
+D25	|	8
+D26	|	9
+D27	|	10
+D33	|	11
