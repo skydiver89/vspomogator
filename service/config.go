@@ -1,0 +1,31 @@
+package main
+
+import (
+	"os"
+
+	"gopkg.in/yaml.v3"
+)
+
+type Config struct {
+	Port    string   `yaml:"port"`
+	Layouts []Layout `yaml:"layouts"`
+}
+
+type Layout struct {
+	Buttons []Button `yaml:"buttons"`
+}
+
+type Button struct {
+	Num     int    `yaml:"num"`
+	Command string `yaml:"command"`
+	Label   string `yaml:"label"`
+}
+
+func (c *Config) load(fname string) error {
+	yamlData, err := os.ReadFile(fname)
+	if err != nil {
+		return err
+	}
+	err = yaml.Unmarshal(yamlData, c)
+	return err
+}
