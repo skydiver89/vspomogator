@@ -1,13 +1,10 @@
 port: /dev/ttyUSB0
 layouts:
   - buttons:
-    - num: 1
-      label: VS Code
+    - label: VS Code
       command: code
-    - num: 3
-      label: Qt Creator
+    - label: Qt Creator
       command: qtcreator
   - buttons:
-    - num: 1
-      label: Terminal
+    - label: Terminal
       command: terminator

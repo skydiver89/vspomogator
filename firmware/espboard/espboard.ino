@@ -24,9 +24,8 @@ TFT_eSPI tft = TFT_eSPI();
 
 void setup() {
   Serial.begin(115200);
-  //Serial.setDebugOutput(false);
-  /*while (!Serial)
-    continue;*/
+  delay(2000);
+  while(!Serial){}
   tft.init();
   tft.setRotation(3); // 0, 1, 2, 3 — поворот экрана
   tft.fillScreen(TFT_BLACK);
@@ -62,14 +61,11 @@ void drawLayout(){
   int y = 20;
   for(int i=0;i<10;i++){
     String label = "";
-    for(int j=0;j<buttons.size();j++){
-      JsonObject btn = buttons[j].as<JsonObject>();
-      int num = btn["Num"];
-      if(num-1 == i){
-        label = String(btn["Label"]);
-        break;
-      }
+    if(i<buttons.size()){
+      JsonObject btn = buttons[i].as<JsonObject>();
+      label = String(btn["Label"]);
     }
+    
     while(label.length() < 11)
       label += " ";
     if(i>=5)
@@ -110,15 +106,7 @@ bool initConfig(){
     }
     tft.fillScreen(TFT_BLACK);
     JsonArray root = conf.as<JsonArray>();
-    for (JsonObject layout : root) {
-      JsonArray buttons = layout["Buttons"].as<JsonArray>();
-      for (JsonObject btn : buttons) {
-        int num = btn["Num"];
-        const char* command = btn["Command"];
-        const char* label = btn["Label"];
-      }
-      layoutNum++;
-    }
+    layoutNum = root.size();
     initialized = true;
     drawLayout();
     return true;
@@ -129,8 +117,12 @@ void loop() {
   for(int i=0;i<numBtns;i++)
     btns[i].tick();
   resetButton.tick(btns[0], btns[9]);
-  if(resetButton.hold())
+  if(resetButton.hold()){
+    tft.fillScreen(TFT_BLACK);
+    tft.setTextSize(3);
+    tft.drawString("Rebooting...", 40, 110);
     ESP.restart();
+  }
 
   if(!initialized){
     if (!initConfig())

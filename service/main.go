@@ -112,7 +112,7 @@ OPEN_PORT:
 		if cmd == "" {
 			continue
 		}
-		fmt.Println(cmd, n)
+		fmt.Println(string(b[:n]), n)
 		if cmd == "init" {
 			jsonData, err := json.Marshal(config.Layouts)
 			n, err := port.Write(append(jsonData, '\n'))

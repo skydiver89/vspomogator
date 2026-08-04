@@ -16,7 +16,6 @@ type Layout struct {
 }
 
 type Button struct {
-	Num     int    `yaml:"num"`
 	Command string `yaml:"command"`
 	Label   string `yaml:"label"`
 }
