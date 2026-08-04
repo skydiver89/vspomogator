@@ -164,13 +164,24 @@ func idleRead(n int, err error) bool {
 	return n == 0 && (err == nil || errors.Is(err, io.EOF))
 }
 
-func sendConfig(port *serial.Port) error {
-	jsonData, err := json.Marshal(config.Layouts)
+// hostMessage is a newline-delimited JSON envelope sent to the device.
+// Add new Type values as other request/response pairs appear.
+type hostMessage struct {
+	Type string      `json:"type"`
+	Data interface{} `json:"data"`
+}
+
+func sendHostMessage(port *serial.Port, msgType string, data interface{}) error {
+	jsonData, err := json.Marshal(hostMessage{Type: msgType, Data: data})
 	if err != nil {
 		return err
 	}
-	log.Printf("init → %d bytes config", len(jsonData))
+	log.Printf("→ %s (%d bytes)", msgType, len(jsonData))
 	return writeAll(port, append(jsonData, '\n'))
+}
+
+func sendConfig(port *serial.Port) error {
+	return sendHostMessage(port, "config", config.Layouts)
 }
 
 func checkDevice(path, id string) error {

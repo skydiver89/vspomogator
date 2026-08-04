@@ -53,23 +53,6 @@ bool pollSerialLine(String &line) {
   return false;
 }
 
-bool applyConfig(const String &line) {
-  JsonDocument doc;
-  DeserializationError error = deserializeJson(doc, line);
-  if (error || !doc.is<JsonArray>())
-    return false;
-
-  JsonArray root = doc.as<JsonArray>();
-  if (root.size() == 0)
-    return false;
-
-  conf = doc;
-  layoutNum = root.size();
-  if (curLayout >= layoutNum)
-    curLayout = 0;
-  return true;
-}
-
 void drawLayout() {
   JsonArray root = conf.as<JsonArray>();
   JsonObject layout = root[curLayout].as<JsonObject>();
@@ -118,9 +101,20 @@ void requestInit() {
   Serial.print(INITREQ);
 }
 
-void onConfig(const String &line) {
-  if (!applyConfig(line))
+// --- host → device messages (newline-delimited JSON) ---
+
+void handleConfig(JsonVariant data) {
+  if (!data.is<JsonArray>())
     return;
+  JsonArray root = data.as<JsonArray>();
+  if (root.size() == 0)
+    return;
+
+  conf.clear();
+  conf.set(data);
+  layoutNum = root.size();
+  if (curLayout >= layoutNum)
+    curLayout = 0;
 
   bool wasInit = initialized;
   initialized = true;
@@ -129,6 +123,31 @@ void onConfig(const String &line) {
   drawLayout();
   if (!wasInit)
     Serial.print(INITOK);
+}
+
+// Dispatch one host line. Envelope: {"type":"...","data":...}
+void handleHostMessage(const String &line) {
+  JsonDocument doc;
+  if (deserializeJson(doc, line))
+    return;
+
+  const char *type = doc["type"];
+  if (!type)
+    return;
+
+  if (strcmp(type, "config") == 0) {
+    handleConfig(doc["data"]);
+    return;
+  }
+
+  // Future host messages:
+  // if (strcmp(type, "stat") == 0) { handleStat(doc["data"]); return; }
+}
+
+void pollHost() {
+  String line;
+  while (pollSerialLine(line))
+    handleHostMessage(line);
 }
 
 void loop() {
@@ -143,9 +162,7 @@ void loop() {
     ESP.restart();
   }
 
-  String line;
-  while (pollSerialLine(line))
-    onConfig(line);
+  pollHost();
 
   if (!initialized) {
     requestInit();
