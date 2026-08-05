@@ -136,7 +136,7 @@ void handleConfig(JsonVariant data) {
     Serial.print(INITOK);
 }
 
-void drawProgressBar(int x, int y, int width, int height, int percentage, uint16_t color) {
+void drawBar(int x, int y, int width, int height, int percentage, uint16_t color) {
   if (percentage < 0) percentage = 0;
   if (percentage > 100) percentage = 100;
   
@@ -166,7 +166,7 @@ void drawStatBar(int x, int y, int width, int height, const char* label, int per
   tft.setTextColor(TFT_WHITE, TFT_BLACK);
   tft.drawString(value, valueX, y);
   
-  drawProgressBar(x, y + textSize * 8 + 2, width, height, percentage, color);
+  drawBar(x, y + textSize * 8 + 2, width, height, percentage, color);
 }
 
 void handleStat(JsonVariant data) {
@@ -216,7 +216,7 @@ void handleStat(JsonVariant data) {
   int tempX = barStartX + barWidth - tft.textWidth(tempStr);
   tft.drawString(tempStr, tempX, startY);
   
-  drawProgressBar(barStartX, startY + 18, barWidth, barHeight, avgLoad, getLoadColor(avgLoad));
+  drawBar(barStartX, startY + 18, barWidth, barHeight, avgLoad, getLoadColor(avgLoad));
   startY += barHeight + 22;
   
   int coresPerRow = (coreCount + 1) / 2;
@@ -242,7 +242,7 @@ void handleStat(JsonVariant data) {
       int perc = percs[i] | 0;
       int x = rowStartX + (i - rowStart) * (coreBarWidth + 4);
       
-      drawProgressBar(x, y, coreBarWidth, barH, perc, getLoadColor(perc));
+      drawBar(x, y, coreBarWidth, barH, perc, getLoadColor(perc));
     }
   }
   
@@ -261,7 +261,7 @@ void handleStat(JsonVariant data) {
   
   tft.setTextColor(TFT_WHITE, TFT_BLACK);
   tft.setTextSize(2);
-  tft.drawString("BATTERY: " + batStatusText, barStartX, startY);
+  tft.drawString("BATTERY " + batStatusText, barStartX, startY);
   
   String value =String(bat) + "%";
   while(value.length() < 4)
@@ -270,10 +270,12 @@ void handleStat(JsonVariant data) {
   tft.setTextColor(TFT_WHITE, TFT_BLACK);
   tft.drawString(value, valueX, startY);
   
-  drawProgressBar(barStartX, startY + 18, barWidth, barHeight, bat, batColor);
+  drawBar(barStartX, startY + 18, barWidth, barHeight, bat, batColor);
   startY += barHeight + 22;
   
   tft.setTextSize(2);
+  tft.drawString("NET", barStartX, startY);
+  startY += 20;
   tft.setTextColor(TFT_WHITE, TFT_BLACK);
   tft.drawString("TX: ", barStartX, startY);
   tft.setTextColor(TFT_YELLOW, TFT_BLACK);

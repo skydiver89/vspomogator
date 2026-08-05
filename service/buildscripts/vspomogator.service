@@ -1,0 +1,15 @@
+[Unit]
+Description=Vspomogator
+After=syslog.target
+After=network.target
+
+[Service]
+Type=simple
+User=root
+Environment="DISPLAY=:0"
+ExecStart=/usr/local/bin/vspomogator -c /etc/vspomogator/vspomogator.yml
+RestartSec=10
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

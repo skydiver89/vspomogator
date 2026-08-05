@@ -46,6 +46,10 @@ func execButton(but string) {
 			log.Println(err)
 			return
 		}
-		cmd.Process.Release()
+		err = cmd.Process.Release()
+		if err != nil {
+			log.Println(err)
+			return
+		}
 	}
 }
