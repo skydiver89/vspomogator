@@ -3,8 +3,17 @@ layouts:
   - buttons:
     - label: VS Code
       command: code
+      type: command
     - label: Qt Creator
       command: qtcreator
+    - label: ss
+      command: ss -tulpn | grep
+      type: keyseq
+      hitenter: false
+    - label: ls
+      command: ls -la
+      type: keyseq
+      hitenter: true
   - buttons:
     - label: Terminal
       command: terminator
