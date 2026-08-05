@@ -5,11 +5,15 @@
 
 #define INITREQ "begincmdinitendcmd"
 #define INITOK "begincmdinitokendcmd"
+#define STATREQ "begincmdstatendcmd"
 #define INITINTERVAL 1000
+#define STATINTERVAL 1000
 #define RX_LINE_MAX 2048
 
 bool initialized = false;
 unsigned long lastInitSent = 0;
+unsigned long lastStatSent = 0;
+bool STATMODE = false;
 int curLayout = 0;
 int layoutNum = 0;
 JsonDocument conf;
@@ -101,6 +105,14 @@ void requestInit() {
   Serial.print(INITREQ);
 }
 
+void requestStat() {
+  unsigned long now = millis();
+  if (now - lastStatSent < STATINTERVAL)
+    return;
+  lastStatSent = now;
+  Serial.print(STATREQ);
+}
+
 // --- host → device messages (newline-delimited JSON) ---
 
 void handleConfig(JsonVariant data) {
@@ -125,6 +137,11 @@ void handleConfig(JsonVariant data) {
     Serial.print(INITOK);
 }
 
+void handleStat(JsonVariant data) {
+  tft.setTextColor(TFT_WHITE, TFT_BLACK);
+  tft.drawString("Layout: " + String(curLayout + 1), 200, 220);
+}
+
 // Dispatch one host line. Envelope: {"type":"...","data":...}
 void handleHostMessage(const String &line) {
   JsonDocument doc;
@@ -140,8 +157,10 @@ void handleHostMessage(const String &line) {
     return;
   }
 
-  // Future host messages:
-  // if (strcmp(type, "stat") == 0) { handleStat(doc["data"]); return; }
+  if (strcmp(type, "stat") == 0) {
+    handleStat(doc["data"]);
+    return;
+  }
 }
 
 void pollHost() {
@@ -169,9 +188,18 @@ void loop() {
     return;
   }
 
+  if (STATMODE)
+    requestStat();
+
   for (int i = 0; i < numBtns; i++) {
     if (btns[i].click() && i != 10)
       Serial.print("begincmdbutton " + String(curLayout + 1) + "-" + String(i + 1) + "endcmd");
+  }
+  if (btns[10].click()){
+    tft.fillScreen(TFT_BLACK);
+    STATMODE = !STATMODE;
+    if(!STATMODE)
+      drawLayout();
   }
   if (btns[10].hold()) {
     curLayout++;

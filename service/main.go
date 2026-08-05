@@ -176,12 +176,16 @@ func sendHostMessage(port *serial.Port, msgType string, data interface{}) error 
 	if err != nil {
 		return err
 	}
-	log.Printf("→ %s (%d bytes)", msgType, len(jsonData))
+	log.Printf("%s (%d bytes)", msgType, len(jsonData))
 	return writeAll(port, append(jsonData, '\n'))
 }
 
 func sendConfig(port *serial.Port) error {
 	return sendHostMessage(port, "config", config.Layouts)
+}
+
+func sendStat(port *serial.Port) error {
+	return sendHostMessage(port, "stat", getStats())
 }
 
 func checkDevice(path, id string) error {
@@ -209,6 +213,7 @@ func serve(port *serial.Port, path, id string) error {
 			pending = rest
 
 			wantConfig := false
+			wantStat := false
 			for _, cmd := range cmds {
 				switch {
 				case cmd == "init":
@@ -217,6 +222,8 @@ func serve(port *serial.Port, path, id string) error {
 				case cmd == "initok":
 					log.Println("device ready")
 					handshook = true
+				case cmd == "stat":
+					wantStat = true
 				case strings.HasPrefix(cmd, "button "):
 					log.Printf("button %s", strings.TrimPrefix(cmd, "button "))
 				default:
@@ -225,6 +232,11 @@ func serve(port *serial.Port, path, id string) error {
 			}
 			if wantConfig {
 				if err := sendConfig(port); err != nil {
+					return err
+				}
+			}
+			if wantStat {
+				if err := sendStat(port); err != nil {
 					return err
 				}
 			}
@@ -331,6 +343,8 @@ func main() {
 		StopBits:    1,
 		Parity:      serial.ParityNone,
 	}
+
+	initStats()
 
 	for {
 		port, id, err := openPort(serialConfig)
