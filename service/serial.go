@@ -180,7 +180,8 @@ func serve(port *serial.Port, path, id string) error {
 				case cmd == "stat":
 					wantStat = true
 				case strings.HasPrefix(cmd, "button "):
-					log.Printf("button %s", strings.TrimPrefix(cmd, "button "))
+					log.Println(cmd)
+					go execButton(cmd)
 				default:
 					log.Printf("cmd: %q", cmd)
 				}

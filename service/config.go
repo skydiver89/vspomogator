@@ -15,11 +15,17 @@ type Layout struct {
 	Buttons []Button `yaml:"buttons"`
 }
 
+type Command struct {
+	Com      string   `yaml:"com"`
+	Args     []string `yaml:"args"`
+	KeySeq   []string `yaml:"keyseq"`
+	HitEnter bool     `yaml:"hitenter"`
+}
+
 type Button struct {
-	Command  string `yaml:"command"`
-	Label    string `yaml:"label"`
-	Type     string `yaml:"type"`
-	HitEnter bool   `yaml:"hitenter"`
+	Command Command `yaml:"command"`
+	Label   string  `yaml:"label"`
+	Type    string  `yaml:"type"`
 }
 
 func (c *Config) load(fname string) error {

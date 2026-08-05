@@ -2,18 +2,36 @@ port: /dev/ttyUSB0
 layouts:
   - buttons:
     - label: VS Code
-      command: code
+      command: 
+        com: code
       type: command
     - label: Qt Creator
-      command: qtcreator
+      command:
+        com: qtcreator
     - label: ss
-      command: ss -tulpn | grep
-      type: keyseq
-      hitenter: false
+      command:
+        com: ss -tulpn | grep
+        hitenter: false
+      type: keytype
     - label: ls
-      command: ls -la
-      type: keyseq
-      hitenter: true
+      command:
+        com: ls -la
+        hitenter: true
+      type: keytype
   - buttons:
     - label: Terminal
-      command: terminator
+      command:
+        com: terminator
+    - label: List files
+      type: command
+      command:
+        com: terminator
+        args:
+        - -e
+        - ls -la ; read
+    - label: Exit
+      type: keyseq
+      command:
+        com: f4
+        args:
+        - alt
