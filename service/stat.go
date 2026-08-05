@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"strconv"
@@ -73,7 +72,7 @@ func calcNetWorkUsage(tx uint64, rx uint64) (restx, resrx string) {
 	return restx, resrx
 }
 
-func getStats() []byte {
+func getStats() Stat {
 	var res Stat
 	stat, err := procstat.ReadStat("/proc/stat")
 	if err != nil {
@@ -125,10 +124,5 @@ func getStats() []byte {
 		res.BatStat = bat.State.String()
 	}
 
-	//fmt.Printf("%#v", res)
-	js, err := json.Marshal(res)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	return js
+	return res
 }
