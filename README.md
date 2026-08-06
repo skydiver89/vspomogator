@@ -1,3 +1,6 @@
+**Languages**  
+* [English](README.md)
+* [Русский](README-RU.md)
 ![Vspomogator V1](./photos/assemblied.jpg)
 ## Description  
 **Vspomogator** — this is programmable macrokeyboard with display, which connecting to PC by USB (via virtual COM-port). Device allows to run commands, emulate text typing or pressing key combinations. Buttons grouped in layouts. Display shows current layout or sytsem info (CPU temperature and load, RAM usage, network activity, battery status). 11 buttons totally. Buttons are enumerated from 1 to 11 from left to right, from top to bottom.  
