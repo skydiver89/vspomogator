@@ -1,37 +1,89 @@
 port: /dev/ttyUSB0
 layouts:
   - buttons:
+    - label: MC
+      command:
+        com: terminator
+        args: [-e, mc]
     - label: VS Code
       command: 
         com: code
       type: command
-    - label: Qt Creator
+    - label: Firefox
       command:
-        com: qtcreator
-    - label: ss
+        com: firefox
+        args: [--new-window]
+    - label: Lock
+      type: keyseq
       command:
-        com: ss -tulpn | grep
-        hitenter: false
-      type: keytype
-    - label: ls
-      command:
-        com: ls -la
-        hitenter: true
-      type: keytype
-  - buttons:
+        com: l
+        args: [ctrl, alt]
     - label: Terminal
       command:
         com: terminator
-    - label: List files
-      type: command
+    - label: Update
       command:
         com: terminator
-        args:
-        - -e
-        - ls -la ; read
-    - label: Exit
+        args: [-e, sudo apt update ; sudo apt dist-upgrade -y ; echo Done ; read]
+    - label: Qt Creator
+      command:
+        com: qtcreator
+    - label: OVPN
+      command:
+        com: terminator
+        args: [-e, sudo openvpn --config /etc/openvpn/YOURAWESOMEVPN.ovpn]
+    - label: Unlock
+      type: keytype
+      command:
+        com: YOURAWESOMEPASSWORD
+        hitenter: true
+    - label: Close
       type: keyseq
       command:
         com: f4
-        args:
-        - alt
+        args: [alt]
+  - buttons:
+    - label: git pull
+      type: keytype
+      command:
+        com: git pull
+        hitenter: true
+    - label: git add
+      type: keytype
+      command:
+        com: git add 
+        hitenter: false
+    - label: git status
+      type: keytype
+      command:
+        com: git status
+        hitenter: true
+    - label: Bambu Lab
+      command:
+        com: bambu
+    - label: Terminal
+      command:
+        com: terminator
+    - label: git push
+      type: keytype
+      command:
+        com: git push
+        hitenter: true
+    - label: git commit
+      type: keytype
+      command:
+        com: git commit -m ""
+        hitenter: false
+    - label: gitk
+      type: keytype
+      command:
+        com: gitk --all
+        hitenter: true
+    - label: Free CAD
+      command:
+        com: freecad
+    - label: Close
+      type: keyseq
+      command:
+        com: f4
+        args: [alt]
