@@ -136,7 +136,7 @@ func sendHostMessage(port *serial.Port, msgType string, data interface{}) error 
 }
 
 func sendConfig(port *serial.Port) error {
-	return sendHostMessage(port, "config", config.Layouts)
+	return sendHostMessage(port, "config", config.toLight().Layouts)
 }
 
 func sendStat(port *serial.Port) error {
