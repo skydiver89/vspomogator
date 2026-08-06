@@ -34,7 +34,7 @@ var (
 
 func parseFlags() {
 	flag.Usage = func() {
-		fmt.Printf("Использование: %s [-c config] [-h] [-v]\n", os.Args[0])
+		fmt.Printf("Usage: %s [-c config] [-h] [-v]\n", os.Args[0])
 		flag.PrintDefaults()
 		os.Exit(0)
 	}
