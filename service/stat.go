@@ -118,7 +118,7 @@ func getStats() Stat {
 	if err != nil {
 		res.Bat = 0
 		res.BatStat = "Unknown"
-		fmt.Println(err)
+		//fmt.Println(err)
 	} else {
 		res.Bat = int(bat.Current * 100 / bat.Full)
 		res.BatStat = bat.State.String()
